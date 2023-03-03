@@ -19,7 +19,7 @@ namespace COMPILER
       public:
         void simplifyCFG();
         void buildDominateTree(COMPILER::IRFunction *func);
-        void transformToSSA();
+        void transformToSSA(); // entry point
         void removeUnusedPhis(IRFunction *func);
         std::string iDomDetailStr() const;
         std::string dominanceFrontierStr() const;
@@ -32,6 +32,7 @@ namespace COMPILER
         void init(IRFunction *func);
         void clear();
         void dfs(BasicBlock *cur_basic_block);
+        // lengauer-tarjan algorithm 
         void tarjan();
         void calcDominanceFrontier(COMPILER::IRFunction *func);
         // disjoint set
@@ -60,9 +61,12 @@ namespace COMPILER
       private:
         BasicBlock *entry{ nullptr };
         // dfs related
-        std::vector<BasicBlock *> dfn;
+        std::vector<BasicBlock *> dfn; // 깊이우선탐색으로 BB를 저장
+        // BB에 index 부여
         std::unordered_map<BasicBlock *, int> dfn_map;
+        // BB간에 부모 자식 관계 설정
         std::unordered_map<BasicBlock *, BasicBlock *> father;
+        // BB 방문 여부를 기록
         std::unordered_map<BasicBlock *, bool> visited;
         // dominate tree related
         std::unordered_map<BasicBlock *, BasicBlock *> sdom; // a.k.a semi, not strict.

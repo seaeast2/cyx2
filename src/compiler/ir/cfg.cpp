@@ -31,11 +31,13 @@ void COMPILER::CFG::clear()
 
 void COMPILER::CFG::dfs(COMPILER::BasicBlock *cur_basic_block)
 {
-    if (cur_basic_block == nullptr) return;
-    if (visited.find(cur_basic_block) != visited.end()) return;
+    if (cur_basic_block == nullptr) 
+        return;
+    if (visited.find(cur_basic_block) != visited.end()) 
+        return; // 이미 방문했으면 나감.
     visited[cur_basic_block] = true;
     dfn.push_back(cur_basic_block);
-    dfn_map[cur_basic_block] = dfn.size() - 1;
+    dfn_map[cur_basic_block] = dfn.size() - 1; // BB에 숫자 부여
     for (auto *block : cur_basic_block->succs)
     {
         dfs(block);
@@ -56,9 +58,10 @@ COMPILER::BasicBlock *COMPILER::CFG::find(COMPILER::BasicBlock *block)
 void COMPILER::CFG::tarjan()
 {
     for (unsigned long i = dfn.size() - 1; i >= 1; i--)
-    {
+    { // BB 를 순회
         auto *cur_block = dfn[i];
-        if (cur_block == nullptr) continue;
+        if (cur_block == nullptr) 
+          continue;
         for (auto *pre_block : cur_block->pres)
         {
             if (dfn_map.find(pre_block) != dfn_map.end())

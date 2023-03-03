@@ -5,6 +5,7 @@
 #include <unordered_set>
 #include <utility>
 #include <vector>
+#include <string>
 
 namespace COMPILER
 {
@@ -73,8 +74,8 @@ namespace COMPILER
         //
         std::list<IRInst *> insts;
         std::list<IRAssign *> phis;
-        std::unordered_set<BasicBlock *> pres;
-        std::unordered_set<BasicBlock *> succs;
+        std::unordered_set<BasicBlock *> pres; // 선행자
+        std::unordered_set<BasicBlock *> succs; // 후행자
         // lifetime interval (a.k.a live ness, live interval analysis) related
         std::unordered_set<std::string> live_in;
         std::unordered_set<std::string> live_out;
