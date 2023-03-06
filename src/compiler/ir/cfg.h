@@ -61,15 +61,16 @@ namespace COMPILER
       private:
         BasicBlock *entry{ nullptr };
         // dfs related
-        std::vector<BasicBlock *> dfn; // 깊이우선탐색으로 BB를 저장
-        // BB에 index 부여
+        // 깊이 우선 탐색으로 dfnum 지정
+        std::vector<BasicBlock *> dfn;
+        // dfnum 검색용 hash
         std::unordered_map<BasicBlock *, int> dfn_map;
-        // BB간에 부모 자식 관계 설정
         std::unordered_map<BasicBlock *, BasicBlock *> father;
-        // BB 방문 여부를 기록
         std::unordered_map<BasicBlock *, bool> visited;
         // dominate tree related
+        // semidominator : 반지배자
         std::unordered_map<BasicBlock *, BasicBlock *> sdom; // a.k.a semi, not strict.
+        // immediate dominator : 직접 지배자
         std::unordered_map<BasicBlock *, BasicBlock *> idom; // the closest point of dominated point
         std::unordered_map<BasicBlock *, std::unordered_set<BasicBlock *>> tree;
         std::unordered_map<BasicBlock *, std::unordered_set<BasicBlock *>> dominance_frontier;

@@ -62,6 +62,7 @@ void COMPILER::CFG::tarjan()
         auto *cur_block = dfn[i];
         if (cur_block == nullptr) 
           continue;
+        // predecessor ¼øÈ¸
         for (auto *pre_block : cur_block->pres)
         {
             if (dfn_map.find(pre_block) != dfn_map.end())
