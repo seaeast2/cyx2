@@ -47,10 +47,16 @@ void COMPILER::CFG::dfs(COMPILER::BasicBlock *cur_basic_block)
 
 COMPILER::BasicBlock *COMPILER::CFG::find(COMPILER::BasicBlock *block)
 {
-    if (block == disjoint_set[block]) return block;
+    // 초기화 init() 에서 block 으로 설정
+    if (block == disjoint_set[block]) 
+      return block; 
+
     auto *tmp = find(disjoint_set[block]);
-    if (dfn_map[sdom[disjoint_set_val[disjoint_set[block]]]] < dfn_map[sdom[disjoint_set_val[block]]])
+    
+    if (dfn_map[sdom[disjoint_set_val[disjoint_set[block]]]] < 
+        dfn_map[sdom[disjoint_set_val[block]]])
         disjoint_set_val[block] = disjoint_set_val[disjoint_set[block]];
+
     disjoint_set[block] = tmp;
     return tmp;
 }
@@ -66,7 +72,7 @@ void COMPILER::CFG::tarjan()
         for (auto *pre_block : cur_block->pres)
         {
             if (dfn_map.find(pre_block) != dfn_map.end())
-            {
+            { // 현재노드의 선행자의 dfnum 이 있으면,
                 find(cur_block);
                 int a           = dfn_map[sdom[cur_block]];
                 int b           = dfn_map[sdom[disjoint_set_val[pre_block]]];
