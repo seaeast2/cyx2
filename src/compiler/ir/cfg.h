@@ -36,6 +36,7 @@ namespace COMPILER
         void tarjan();
         void calcDominanceFrontier(COMPILER::IRFunction *func);
         // disjoint set
+        // 경로 압축을 적용한 block의 최소값 dfnum의 준지배자 찾기
         COMPILER::BasicBlock *find(COMPILER::BasicBlock *block);
         // SSA construction
         void collectVarAssign(COMPILER::IRFunction *func);
@@ -47,6 +48,7 @@ namespace COMPILER
         std::optional<CYX::Value> tryFindConstant(COMPILER::IRVar *var);
         //
         void destroyPhiNode(COMPILER::IRAssign *assign);
+        // phi 함수 제거, register allocation 은 사용하지 않고 간단한 방식.
         void phiElimination(COMPILER::IRFunction *func);
         void deadCodeElimination(COMPILER::IRFunction *func);
         // rename
@@ -63,15 +65,16 @@ namespace COMPILER
         // dfs related
         // 깊이 우선 탐색으로 dfnum 지정
         std::vector<BasicBlock *> dfn;
-        // dfnum 검색용 hash
+        // node로 dfnum 검색
         std::unordered_map<BasicBlock *, int> dfn_map;
         std::unordered_map<BasicBlock *, BasicBlock *> father;
         std::unordered_map<BasicBlock *, bool> visited;
         // dominate tree related
-        // semidominator : 반지배자
+        // <node,semidominator> : 특정노드의 준지배자 쌍
         std::unordered_map<BasicBlock *, BasicBlock *> sdom; // a.k.a semi, not strict.
         // immediate dominator : 직접 지배자
         std::unordered_map<BasicBlock *, BasicBlock *> idom; // the closest point of dominated point
+        // 준지배자 숲. 책에서 bucket 과 동일
         std::unordered_map<BasicBlock *, std::unordered_set<BasicBlock *>> tree;
         std::unordered_map<BasicBlock *, std::unordered_set<BasicBlock *>> dominance_frontier;
         // disjoint set (union find) related

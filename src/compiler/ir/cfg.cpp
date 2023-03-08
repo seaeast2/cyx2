@@ -46,8 +46,7 @@ void COMPILER::CFG::dfs(COMPILER::BasicBlock *cur_basic_block)
 }
 
 COMPILER::BasicBlock *COMPILER::CFG::find(COMPILER::BasicBlock *block)
-{
-    // 초기화 init() 에서 block 으로 설정
+{ // 경로 압축을 적용한 block의 최소값 dfnum의 준지배자 찾기
     if (block == disjoint_set[block]) 
       return block; 
 
@@ -68,19 +67,26 @@ void COMPILER::CFG::tarjan()
         auto *cur_block = dfn[i];
         if (cur_block == nullptr) 
           continue;
-        // predecessor 순회
+
         for (auto *pre_block : cur_block->pres)
         {
             if (dfn_map.find(pre_block) != dfn_map.end())
-            { // 현재노드의 선행자의 dfnum 이 있으면,
+            {
                 find(cur_block);
-                int a           = dfn_map[sdom[cur_block]];
-                int b           = dfn_map[sdom[disjoint_set_val[pre_block]]];
+                // 현재 노드의 준지배자의 dfnum
+                int a = dfn_map[sdom[cur_block]];
+                // ??
+                int b = dfn_map[sdom[disjoint_set_val[pre_block]]];
+                // 일단 sdom 은 cur_block 의 선행자중 dfnum 이 가장 작은 노드로 정해진다.
                 sdom[cur_block] = dfn[std::min(a, b)];
             }
         }
+        
+        // 준지배자의 지배를 받는 모든 노드의 집합 
         tree[sdom[cur_block]].insert(cur_block);
+        // 현재 노드의 부모 노드.
         disjoint_set[cur_block] = father[cur_block];
+
         auto *tmp               = disjoint_set[cur_block];
         for (auto *block : tree[tmp])
         {
