@@ -169,15 +169,16 @@ namespace COMPILER
         if (inst->tag == TAG) return static_cast<T *>(inst);
         return nullptr;
     }
-    //
-
+    
+    // Expr 역할.
     class IRValue : public IR
     {
       public:
         using IR::IR;
-        IRInst *belong_inst{ nullptr };
+        IRInst *belong_inst{ nullptr }; // 이 명령어의 부모 명령어
     };
 
+    // Stmt 역할
     class IRInst : public IR
     {
       public:
@@ -387,6 +388,7 @@ namespace COMPILER
         std::list<IRVar *> use;
     };
 
+    // 사용 안함.
     class IRParams : public IRInst
     {
       public:

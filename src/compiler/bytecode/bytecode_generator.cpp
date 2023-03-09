@@ -18,6 +18,7 @@ void COMPILER::BytecodeGenerator::ir2VmInst()
 {
     bytecode_basicblocks.push_back(new BytecodeBasicBlock("global_var_decl"));
     genGlobalVarDecl();
+    
     global_var_len = bytecode_basicblocks.back()->vm_insts.size();
     for (auto *func : funcs)
     {

@@ -76,9 +76,12 @@ namespace COMPILER
         std::unordered_map<BasicBlock *, BasicBlock *> idom; // the closest point of dominated point
         // 준지배자 숲. 책에서 bucket 과 동일
         std::unordered_map<BasicBlock *, std::unordered_set<BasicBlock *>> tree;
+        // DF
         std::unordered_map<BasicBlock *, std::unordered_set<BasicBlock *>> dominance_frontier;
         // disjoint set (union find) related
+        // <node, father> : 현재 노드의 부모 노드쌍
         std::unordered_map<BasicBlock *, BasicBlock *> disjoint_set;
+        // <node, > : 부모의 부모??
         std::unordered_map<BasicBlock *, BasicBlock *> disjoint_set_val;
         // SSA construction.....
         std::unordered_map<std::string, std::unordered_set<BasicBlock *>> var_block_map;

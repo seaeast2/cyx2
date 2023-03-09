@@ -50,6 +50,7 @@ COMPILER::BasicBlock *COMPILER::CFG::find(COMPILER::BasicBlock *block)
     if (block == disjoint_set[block]) 
       return block; 
 
+    // disjoint_set 의 key 와 value 가 동일할 때 까지 재귀를 반복.
     auto *tmp = find(disjoint_set[block]);
     
     if (dfn_map[sdom[disjoint_set_val[disjoint_set[block]]]] < 
@@ -77,7 +78,8 @@ void COMPILER::CFG::tarjan()
                 int a = dfn_map[sdom[cur_block]];
                 // ??
                 int b = dfn_map[sdom[disjoint_set_val[pre_block]]];
-                // 일단 sdom 은 cur_block 의 선행자중 dfnum 이 가장 작은 노드로 정해진다.
+                // 일단 sdom 은 cur_block 의 선행자중 
+                // dfnum 이 가장 작은 노드로 정해진다.
                 sdom[cur_block] = dfn[std::min(a, b)];
             }
         }
@@ -86,22 +88,26 @@ void COMPILER::CFG::tarjan()
         tree[sdom[cur_block]].insert(cur_block);
         // 현재 노드의 부모 노드.
         disjoint_set[cur_block] = father[cur_block];
-
-        auto *tmp               = disjoint_set[cur_block];
+        // tmp는 현재 노드의 부모 노드
+        auto *tmp = disjoint_set[cur_block];
+        
         for (auto *block : tree[tmp])
-        {
+        { // block은 준지배자 tmp 에게 지배받는 모드 노드들.
             find(block);
-            if (dfn_map[sdom[disjoint_set_val[block]]] < dfn_map[father[cur_block]])
+            if (dfn_map[sdom[disjoint_set_val[block]]] < 
+                dfn_map[father[cur_block]])
                 idom[block] = disjoint_set_val[block];
             else
                 idom[block] = father[cur_block];
         }
         tree[tmp].clear();
     }
+
     for (int i = 1; i < dfn.size(); i++)
     {
         auto *cur_block = dfn[i];
-        if (idom[cur_block] != sdom[cur_block]) idom[cur_block] = idom[idom[cur_block]];
+        if (idom[cur_block] != sdom[cur_block]) 
+          idom[cur_block] = idom[idom[cur_block]];
         tree[idom[cur_block]].insert(cur_block);
     }
 }
