@@ -443,6 +443,7 @@ namespace CYX
         }
 
       private:
+        // union 의 C++ 식 해결법
         std::variant<std::monostate, long long, double, std::string, std::vector<Value>> _value;
     };
 

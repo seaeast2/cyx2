@@ -740,13 +740,19 @@ std::string COMPILER::IRGenerator::irStr()
 
 void COMPILER::IRGenerator::visitTree(COMPILER::Tree *ptr)
 {
-    if (cur_basic_block == nullptr) cur_basic_block = newBasicBlock();
+    // 현재 BB 를 생성
+    if (cur_basic_block == nullptr) 
+      cur_basic_block = newBasicBlock();
+
+    // ast 를 순회
     for (auto *x : ptr->stmts)
     {
         x->visit(this);
     }
-    step            = 0;
+
+    step = 0;
     global_var_decl = new BasicBlock();
+
     for (const auto &x : first_scan_vars)
     {
         Symbol symbol;

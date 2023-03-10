@@ -79,7 +79,7 @@ namespace COMPILER
 
       public:
         std::unordered_map<std::string, Symbol> table;
-        SymbolTable *pre{ nullptr };
+        SymbolTable *pre{ nullptr }; // predecessor
     };
 
 } // namespace COMPILER

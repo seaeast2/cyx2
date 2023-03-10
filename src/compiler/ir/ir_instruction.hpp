@@ -378,8 +378,8 @@ namespace COMPILER
         }
 
       public:
-        bool is_array{ false };
-        std::vector<IR *> index;
+        bool is_array{ false }; // 배열 여부
+        std::vector<IR *> index; // 배열로 사용될 경우 index
         //
         bool is_ir_gen{ false };
         std::string name;
