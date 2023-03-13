@@ -1,7 +1,7 @@
 #include "ir_generator.h"
 
-#define LINK(PRE, SUCC)                                                                                                \
-    PRE->addSucc(SUCC);                                                                                                \
+#define LINK(PRE, SUCC) \
+    PRE->addSucc(SUCC); \
     SUCC->addPre(PRE)
 
 #define POS(PTR) (std::to_string((PTR)->row) + ":" + std::to_string((PTR)->column))
@@ -652,6 +652,7 @@ COMPILER::IRVar *COMPILER::IRGenerator::newVariable()
 
     symbol.var = ir_var;
 
+    // 새로운 변수가 정의될 때마다 SymbolTable 에 추가한다. 
     cur_symbol->upsert(ir_var->name, symbol);
     tmp_vars.push(ir_var);
     return tmp_vars.top();
@@ -783,6 +784,7 @@ void COMPILER::IRGenerator::visitTree(COMPILER::Tree *ptr)
         cur_symbol->upsert(x.first, symbol);
         global_var_decl->addInst(assign);
     }
+    
     // func_name is only used to verify if the current func-name is ENTRY_FUNC
     for (const auto &[func_name, func_pointer] : first_scan_funcs)
     {
@@ -814,7 +816,10 @@ void COMPILER::IRGenerator::visitTree(COMPILER::Tree *ptr)
         func_pointer->block->visit(this);
         exitScope();
     }
-    if (!NO_CODE_SIMPLIFY) simplifyIR();
+
+    if (!NO_CODE_SIMPLIFY) 
+      simplifyIR();
+
     fixEdges();
 }
 
