@@ -72,8 +72,8 @@ namespace COMPILER
         std::string name;
         int block_index;
         //
-        std::list<IRInst *> insts;
-        std::list<IRAssign *> phis;
+        std::list<IRInst *> insts; // 명령어 목록
+        std::list<IRAssign *> phis; // phi 함수 목록 
         std::unordered_set<BasicBlock *> pres; // 선행자
         std::unordered_set<BasicBlock *> succs; // 후행자
         // lifetime interval (a.k.a live ness, live interval analysis) related

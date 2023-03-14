@@ -169,12 +169,15 @@ int main(int argc, char *argv[])
 
     // NO_CODE_SIMPLIFY is moved to the end of IRGenerator::visitTree()
 
-    if (REMOVE_UNUSED_DEFINE) ir_generator.removeUnusedVarDef();
+    if (REMOVE_UNUSED_DEFINE) 
+      ir_generator.removeUnusedVarDef();
     // cfg, ssa, optimize related.
     COMPILER::CFG cfg;
     cfg.funcs = ir_generator.funcs;
-    if (!NO_CFG_SIMPLIFY) cfg.simplifyCFG();
-    if (!NO_SSA) cfg.transformToSSA();
+    if (!NO_CFG_SIMPLIFY) 
+      cfg.simplifyCFG();
+    if (!NO_SSA) 
+      cfg.transformToSSA();
     // vm instruction builder
     COMPILER::BytecodeGenerator bytecode_generator;
     bytecode_generator.funcs       = cfg.funcs;

@@ -201,28 +201,28 @@ void COMPILER::IRGenerator::visitStringExpr(COMPILER::StringExpr *ptr)
 void COMPILER::IRGenerator::visitAssignExpr(COMPILER::AssignExpr *ptr)
 {
     if (step == 1)
-    {
+    { // ast 순회 단계.
         auto *ir_var = new HIRVar;
-        ir_var->name = static_cast<IdentifierExpr *>(ptr->lhs)->value;
-        ir_var->rhs  = ptr->rhs;
+        ir_var->name = static_cast<IdentifierExpr *>(ptr->lhs)->value; // 이름 설정
+        ir_var->rhs  = ptr->rhs; // 값 설정
 
         if (first_scan_funcs.find(ir_var->name) != first_scan_funcs.end())
-        {
+        { // 혹시 이 이름이 함수명으로 등록되어 있는지 검사
             CERR("twice defined! previous `" + ir_var->name + "` defined is function!!");
         }
 
-        first_scan_vars[ir_var->name] = ir_var;
+        first_scan_vars[ir_var->name] = ir_var; // 1차 스캔 변수 목록에 추가
         return;
     }
     // actually assign is one of the binary expr
     auto *assign  = new IRAssign;
-    assign->block = cur_basic_block;
-    //
+    assign->block = cur_basic_block; // 현재 BB 를 설정
+    
     check_var_exist = true;
-    ptr->rhs->visit(this);
+    ptr->rhs->visit(this); // rhs 를 evaluation
     check_var_exist = false;
     if (cur_value.hasValue())
-    {
+    { // literal 에서 읽어온 값이 있으면 rhs 에 값 셋팅
         auto *constant  = new IRConstant;
         constant->value = cur_value;
         assign->setSrc(constant);
@@ -251,7 +251,7 @@ void COMPILER::IRGenerator::visitIdentifierExpr(COMPILER::IdentifierExpr *ptr)
         var->name = ptr->value;
         var->def  = upval.var;
 
-        tmp_vars.push(var);
+        tmp_vars.push(var); // variable stack 에 넣는다.
     }
     else if (upval.type == Symbol::Type::INVALID)
     {
@@ -352,7 +352,8 @@ void COMPILER::IRGenerator::visitIfStmt(COMPILER::IfStmt *ptr)
     auto *false_block = newBasicBlock();
     LINK(cond_block, false_block);
     cur_basic_block = false_block;
-    if (ptr->false_block != nullptr) ptr->false_block->visit(this);
+    if (ptr->false_block != nullptr) 
+      ptr->false_block->visit(this);
     auto *out_of_false = cur_basic_block;
     auto *out_block    = newBasicBlock();
     LINK(out_of_true, out_block);
@@ -367,7 +368,8 @@ void COMPILER::IRGenerator::visitIfStmt(COMPILER::IfStmt *ptr)
     branch->cond        = cond;
     cond_block->addInst(branch);
 
-    if (inOr(true_block->insts.back()->tag, IR::Tag::RETURN, IR::Tag::JMP)) return;
+    if (inOr(true_block->insts.back()->tag, IR::Tag::RETURN, IR::Tag::JMP)) 
+      return;
     // jump to the out block after executed true block instructions.
     auto *true_jmp   = new IRJump;
     true_jmp->block  = true_block;
@@ -396,8 +398,10 @@ void COMPILER::IRGenerator::visitForStmt(COMPILER::ForStmt *ptr)
     @out
      ....
     */
-    if (cur_fix_break_wait_list != nullptr) fix_break_wait_list_stack.push(cur_fix_break_wait_list);
-    if (cur_fix_continue_wait_list != nullptr) fix_continue_wait_list_stack.push(cur_fix_continue_wait_list);
+    if (cur_fix_break_wait_list != nullptr) 
+      fix_break_wait_list_stack.push(cur_fix_break_wait_list);
+    if (cur_fix_continue_wait_list != nullptr) 
+      fix_continue_wait_list_stack.push(cur_fix_continue_wait_list);
     cur_fix_break_wait_list    = new std::vector<IRJump *>;
     cur_fix_continue_wait_list = new std::vector<IRJump *>;
     //
@@ -476,8 +480,10 @@ void COMPILER::IRGenerator::visitForStmt(COMPILER::ForStmt *ptr)
 
 void COMPILER::IRGenerator::visitWhileStmt(COMPILER::WhileStmt *ptr)
 {
-    if (cur_fix_break_wait_list != nullptr) fix_break_wait_list_stack.push(cur_fix_break_wait_list);
-    if (cur_fix_continue_wait_list != nullptr) fix_continue_wait_list_stack.push(cur_fix_continue_wait_list);
+    if (cur_fix_break_wait_list != nullptr) 
+      fix_break_wait_list_stack.push(cur_fix_break_wait_list);
+    if (cur_fix_continue_wait_list != nullptr) 
+      fix_continue_wait_list_stack.push(cur_fix_continue_wait_list);
     cur_fix_break_wait_list    = new std::vector<IRJump *>;
     cur_fix_continue_wait_list = new std::vector<IRJump *>;
 
@@ -546,7 +552,8 @@ void COMPILER::IRGenerator::visitMatchStmt(COMPILER::MatchStmt *ptr)
 void COMPILER::IRGenerator::visitFuncDeclStmt(COMPILER::FuncDeclStmt *ptr)
 {
     // first scan...
-    if (step != 1) return;
+    if (step != 1) 
+      return;
 
     auto *func    = new HIRFunction;
     func->ir_func = new IRFunction;
@@ -665,7 +672,7 @@ std::string COMPILER::IRGenerator::newLabel()
 
 COMPILER::IRVar *COMPILER::IRGenerator::consumeVariable(bool force_IRVar)
 {
-    auto *tmp = tmp_vars.top();
+    auto *tmp = tmp_vars.top(); // 하위식에서 생성된 변수 하나 꺼냄.
     tmp_vars.pop();
     if (!force_IRVar || tmp->is_array)
     {
@@ -741,7 +748,7 @@ std::string COMPILER::IRGenerator::irStr()
 
 void COMPILER::IRGenerator::visitTree(COMPILER::Tree *ptr)
 {
-    // 현재 BB 를 생성
+    // 가장 최초에 일단 무명의 BB 생성
     if (cur_basic_block == nullptr) 
       cur_basic_block = newBasicBlock();
 
@@ -751,9 +758,10 @@ void COMPILER::IRGenerator::visitTree(COMPILER::Tree *ptr)
         x->visit(this);
     }
 
-    step = 0;
+    step = 0; // ast 한번 순회 하고 난 다음에 1 => 0 으로 변경
     global_var_decl = new BasicBlock();
 
+    // 1차 scan한 variable 들을 처리
     for (const auto &x : first_scan_vars)
     {
         Symbol symbol;
@@ -768,7 +776,7 @@ void COMPILER::IRGenerator::visitTree(COMPILER::Tree *ptr)
         assign->setDest(var_def);
 
         if (cur_value.hasValue())
-        {
+        {// 초기화 literal 값이 있으면 적용
             auto *constant  = new IRConstant;
             constant->value = cur_value;
             cur_value.reset();
@@ -786,6 +794,8 @@ void COMPILER::IRGenerator::visitTree(COMPILER::Tree *ptr)
     }
     
     // func_name is only used to verify if the current func-name is ENTRY_FUNC
+    // 함수는 첫번째 스캔에서 parameter 와 함수명만 scan 하여 first_scan_funcs 에 저장한다.
+    // 따라서 실질적인 IR 변환은 아래 에서 이루어 지게 된다.
     for (const auto &[func_name, func_pointer] : first_scan_funcs)
     {
         loop_stack.clear();

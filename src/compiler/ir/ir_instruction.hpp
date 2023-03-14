@@ -183,7 +183,7 @@ namespace COMPILER
     {
       public:
         using IR::IR;
-        COMPILER::BasicBlock *block{ nullptr };
+        COMPILER::BasicBlock *block{ nullptr }; // 모든 IRInst 는 소속 BB 를 지정해야 한다.
         int id{ -1 }; // instruction ID, for compute lifetime interval in `cfg.cpp`
     };
 

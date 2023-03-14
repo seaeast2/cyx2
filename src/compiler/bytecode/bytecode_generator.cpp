@@ -578,7 +578,8 @@ void COMPILER::BytecodeGenerator::genGlobalVarDecl()
     for (auto inst : global_vars->insts)
     {
         auto *tmp = as<IRAssign, IR::Tag::ASSIGN>(inst);
-        if (tmp == nullptr) continue;
+        if (tmp == nullptr) 
+          continue;
         genAssign(tmp);
     }
 }

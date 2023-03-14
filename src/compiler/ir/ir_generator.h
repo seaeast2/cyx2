@@ -77,10 +77,11 @@ namespace COMPILER
         int label_cnt{ 0 };
         SymbolTable global_table;
         //
-        bool check_var_exist{ false };
+        bool check_var_exist{ false }; // 딱히 별 역할을 하지는 않음. 뭔가 하려고 만들었다가 안한듯.
+        // 하위식에서 나온 변수를 상위식에서 사용하기 위해서 임시로 저장하는 곳
         std::stack<IRVar *> tmp_vars;
-        //
-        CYX::Value cur_value;
+        // cur_value 는 literal 에서 읽어온 값을 저장한다.
+        CYX::Value cur_value; // Value 는 모든 값들을 담아 놓을 수 있는 union container 역할
         IRFunction *cur_func{ nullptr };
         BasicBlock *cur_basic_block{ nullptr };
         SymbolTable *cur_symbol{ nullptr };
@@ -110,6 +111,7 @@ namespace COMPILER
             std::string name;
             Expr *rhs{ nullptr };
         };
+
         int step = 1;
         std::unordered_map<std::string, HIRFunction *> first_scan_funcs;
         std::unordered_map<std::string, HIRVar *> first_scan_vars;
