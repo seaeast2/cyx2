@@ -36,7 +36,8 @@ namespace COMPILER
             auto *cur_table = this;
             while (cur_table != nullptr)
             {
-                if (cur_table->table.find(name) != cur_table->table.end()) return cur_table->table[name];
+                if (cur_table->table.find(name) != cur_table->table.end()) 
+                    return cur_table->table[name];
                 cur_table = cur_table->pre;
             }
             return Symbol();

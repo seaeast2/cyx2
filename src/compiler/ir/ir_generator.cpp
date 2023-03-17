@@ -103,8 +103,8 @@ void COMPILER::IRGenerator::visitUnaryExpr(COMPILER::UnaryExpr *ptr)
 void COMPILER::IRGenerator::visitBinaryExpr(COMPILER::BinaryExpr *ptr)
 {
     auto *binary   = new IRBinary;
-    auto *assign   = new IRAssign;
-    binary->opcode = token2IROp(ptr->op.keyword);
+    auto *assign   = new IRAssign; // cyx2 에서는 assign 이 기본적으로 들어가는데, 내가 볼때는 필요 없다.
+    binary->opcode = token2IROp(ptr->op.keyword); // opcode 할당
     assign->setSrc(binary);
     assign->block = cur_basic_block;
     // lhs
@@ -244,7 +244,7 @@ void COMPILER::IRGenerator::visitAssignExpr(COMPILER::AssignExpr *ptr)
 
 void COMPILER::IRGenerator::visitIdentifierExpr(COMPILER::IdentifierExpr *ptr)
 {
-    auto upval = cur_symbol->query(ptr->value);
+    auto upval = cur_symbol->query(ptr->value); // symbol 에서 변수를 가져온다.
     if (upval.type == Symbol::Type::VAR)
     {
         auto *var = new IRVar;

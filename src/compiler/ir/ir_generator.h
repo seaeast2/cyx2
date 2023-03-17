@@ -58,6 +58,7 @@ namespace COMPILER
         //
         IRVar *newVariable();
         std::string newLabel();
+        // variable 을 stack 에서 꺼내서 IRVar 로 포장해서 반환
         COMPILER::IRVar *consumeVariable(bool force_IRVar = true);
         BasicBlock *newBasicBlock(const std::string &name = "");
         void destroyVar(IRVar *var);
